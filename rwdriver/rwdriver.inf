@@ -1,0 +1,57 @@
+;
+; rwdriver.inf
+;
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = System
+ClassGuid   = {4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider    = %ManufacturerName%
+CatalogFile = rwdriver.cat
+DriverVer   = 12/31/2024,1.0.0.1
+PnpLockdown = 1
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+rwdriver.sys = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName% = Standard,NTamd64.10.0...16299
+
+[Standard.NTamd64.10.0...16299]
+%rwdriver.DeviceDesc% = rwdriver_Device, Root\rwdriver
+
+[rwdriver_Device.NT]
+CopyFiles = rwdriver_Files
+
+[rwdriver_Files]
+rwdriver.sys
+
+;-------------- Service installation
+[rwdriver_Device.NT.Services]
+AddService = rwdriver,%SPSVCINST_ASSOCSERVICE%, rwdriver_Service_Inst
+
+; -------------- rwdriver driver install sections
+[rwdriver_Service_Inst]
+DisplayName    = %rwdriver.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\rwdriver.sys
+
+;-------------- String section
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+ManufacturerName = "Leviathan"
+DiskName = "Leviathan Installation Disk"
+rwdriver.DeviceDesc = "Leviathan Memory Driver"
+rwdriver.SVCDESC = "Leviathan Memory Service"
